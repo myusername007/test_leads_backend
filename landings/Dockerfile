@@ -7,5 +7,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY shared/ ./shared/
 COPY landings/ ./landings/
+COPY alembic.ini .
 
 CMD ["uvicorn", "landings.main:app", "--host", "0.0.0.0", "--port", "8001"]
