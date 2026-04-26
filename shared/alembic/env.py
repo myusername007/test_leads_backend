@@ -8,6 +8,8 @@ from sqlalchemy import pool
 
 # Ensure shared package is importable
 import sys
+sys.path.insert(0, "/app")  # Docker WORKDIR
+# Fallback для локального запуску
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../.."))
 
 from shared.models import Base  # noqa: E402
