@@ -41,21 +41,38 @@ services:
       redis:
         condition: service_healthy
 
-  core:
-    build:
-      context: .
-      dockerfile: core/Dockerfile
+  #core:
+   # build:
+    #  context: .
+     # dockerfile: core/Dockerfile
+   # ports:
+    #  - "8002:8002"
+#    environment:
+ #     DATABASE_URL: postgresql+asyncpg://leads_user:leads_pass@postgres:5432/leads_db
+  #    REDIS_URL: redis://redis:6379
+ #     JWT_SECRET: change-me-in-production
+ #   depends_on:
+ #     postgres:
+ #       condition: service_healthy
+ #     redis:
+ #       condition: service_healthy
+
+  buyo:                              
+    build: ../buyo-internship-template
     ports:
-      - "8002:8002"
+      - "8000:8000"
     environment:
-      DATABASE_URL: postgresql+asyncpg://leads_user:leads_pass@postgres:5432/leads_db
-      REDIS_URL: redis://redis:6379
-      JWT_SECRET: change-me-in-production
+      DB__HOST: postgres
+      DB__PORT: 5432
+      DB__NAME: buyo_db
+      DB__USER: leads_user
+      DB__PASSWORD: leads_pass
+      JWT__SECRET_KEY: your-secret
+      REDIS__HOST: redis
+      REDIS__PORT: 6379
     depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+      - postgres
+      - redis
 
 volumes:
   postgres_data:

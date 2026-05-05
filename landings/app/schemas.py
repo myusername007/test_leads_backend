@@ -1,8 +1,6 @@
 import re
-
 from pydantic import BaseModel, field_validator
 
-# ISO 3166-1 alpha-2 — повний список кодів країн
 VALID_COUNTRY_CODES = {
     "AF","AX","AL","DZ","AS","AD","AO","AI","AQ","AG","AR","AM","AW","AU","AT",
     "AZ","BS","BH","BD","BB","BY","BE","BZ","BJ","BM","BT","BO","BQ","BA","BW",
@@ -27,13 +25,11 @@ PHONE_RE = re.compile(r"^\+?[\d\s\-\(\)]{7,20}$")
 
 
 class LeadIn(BaseModel):
-    """ POST /lead."""
-
+    """POST /lead."""
     name: str
     phone: str
     country: str
-    offer_id: int
-    affiliate_id: int
+    flow_id: str      # public_id потоку (наприклад "a2Ban4yOV8Av")
 
     model_config = {
         "json_schema_extra": {
@@ -41,8 +37,7 @@ class LeadIn(BaseModel):
                 "name": "Олексій",
                 "phone": "+380982342123",
                 "country": "UA",
-                "offer_id": 1,
-                "affiliate_id": 1,
+                "flow_id": "flow00000001",
             }
         }
     }
@@ -68,19 +63,11 @@ class LeadIn(BaseModel):
     def country_valid(cls, v: str) -> str:
         v = v.upper().strip()
         if v not in VALID_COUNTRY_CODES:
-            raise ValueError(f"Невалідний код країни ISO 3166-1 alpha-2: {v}")
-        return v
-
-    @field_validator("offer_id", "affiliate_id")
-    @classmethod
-    def positive_id(cls, v: int) -> int:
-        if v <= 0:
-            raise ValueError("ID має бути більше 0")
+            raise ValueError(f"Невалідний код країни: {v}")
         return v
 
 
 class LeadResponse(BaseModel):
-    """успішне прийняття ліда"""
-
+    """Успішне прийняття ліда."""
     status: str = "queued"
     message: str = "Лід прийнято та поставлено в чергу"
